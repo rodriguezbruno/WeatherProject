@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">WeatherProject</string>
+    <string name="hello">text_day_degrees</string>
+    <string name="txt_weather_error">Report not found</string>
 </resources>
