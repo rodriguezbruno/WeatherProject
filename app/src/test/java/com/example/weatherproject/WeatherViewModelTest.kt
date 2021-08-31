@@ -20,16 +20,12 @@ import org.junit.Test
 import org.mockito.Mock
 import org.mockito.MockitoAnnotations
 import org.mockito.kotlin.whenever
-import java.lang.Exception
 
 class WeatherViewModelTest {
 
     companion object {
-        private const val VALID_LAT = -34.9
-        private const val VALID_LONG = -54.95
-
-        private const val INVALID_LAT = -34325432432423.93213123123123
-        private const val INVALID_LONG = -34325432432423.93213123123123
+        private const val LAT = -34.9
+        private const val LONG = -54.95
     }
 
     class TestObserver<T> : Observer<T> {
@@ -87,12 +83,12 @@ class WeatherViewModelTest {
     @Test
     fun getWeatherReportSuccess() {
         val liveDataUnderTest = subject.mainState.testObserver()
-        whenever(getWeatherReportByLocation.invoke(VALID_LAT, VALID_LONG, true)).thenReturn(
+        whenever(getWeatherReportByLocation.invoke(LAT, LONG, true)).thenReturn(
             weatherReportValidResult
         )
         whenever(weatherReportValidResult.data).thenReturn(weatherReport)
         runBlocking {
-            subject.getWeatherReport(VALID_LAT, VALID_LONG).join()
+            subject.getWeatherReport(LAT, LONG).join()
         }
         liveDataUnderTest.observedValues.run {
             assertEquals(Status.LOADING, first()?.peekContent()?.responseType)
@@ -107,13 +103,13 @@ class WeatherViewModelTest {
     @Test
     fun getWeatherReportFail() {
         val liveDataUnderTest = subject.mainState.testObserver()
-        whenever(getWeatherReportByLocation.invoke(INVALID_LAT, INVALID_LONG, true)).thenReturn(
+        whenever(getWeatherReportByLocation.invoke(LAT, LONG, true)).thenReturn(
             weatherReportInvalidResult
         )
         whenever(weatherReportInvalidResult.exception).thenReturn(exception)
 
         runBlocking {
-            subject.getWeatherReport(INVALID_LAT, INVALID_LONG).join()
+            subject.getWeatherReport(LAT, LONG).join()
         }
         liveDataUnderTest.observedValues.run {
             assertEquals(Status.LOADING, first()?.peekContent()?.responseType)

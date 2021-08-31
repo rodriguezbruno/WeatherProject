@@ -8,13 +8,15 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
-private const val PUBLIC_API_KEY_ARG = "appid"
-private const val PUBLIC_API_KEY_ARG_VALUE = "a588631c47af55a2156f2f07541a4494"
-private const val WEATHER_BASE_URL = "https://api.openweathermap.org/data/2.5/"
-private const val MAX_TRYOUTS = 3
-private const val INIT_TRYOUT = 1
-
 class WeatherReportRequestGenerator(context: Context) {
+
+    companion object {
+        private const val PUBLIC_API_KEY_ARG = "appid"
+        private const val PUBLIC_API_KEY_ARG_VALUE = "a588631c47af55a2156f2f07541a4494"
+        private const val WEATHER_BASE_URL = "https://api.openweathermap.org/data/2.5/"
+        private const val MAX_TRYOUTS = 3
+        private const val INIT_TRYOUT = 1
+    }
 
     private val httpClient = OkHttpClient.Builder()
         .addInterceptor(

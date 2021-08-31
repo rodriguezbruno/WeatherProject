@@ -1,5 +1,7 @@
 package com.example.data.service.response
 
+import com.google.gson.annotations.SerializedName
+
 data class OneCallResponse(
     val lat: Double,
     val lon: Double,
@@ -10,9 +12,11 @@ data class OneCallDailyResponse(
     val dt: Long,
     val temp: OneCallTempResponse,
     val weather: List<OneCallWeatherResponse>,
-    val feels_like: OneCallFeelsLikeResponse,
+    @SerializedName(value = "feels_like")
+    val feelsLike: OneCallFeelsLikeResponse,
     val humidity: Int,
-    val wind_speed: Double
+    @SerializedName(value = "wind_speed")
+    val windSpeed: Double
 )
 
 data class OneCallWeatherResponse(

@@ -42,7 +42,7 @@ class ReportActivity : AppCompatActivity() {
     private fun updateUI(weatherReport: Event<Data<WeatherReport>>) {
         when (weatherReport.peekContent().responseType) {
             Status.ERROR -> {
-                hideProgress()
+                hideProgressForError()
                 weatherReport.peekContent().error?.message?.let { showMessage(it) }
                 binding.textNotFoundError.text = getString(R.string.txt_weather_error)
             }
@@ -50,8 +50,7 @@ class ReportActivity : AppCompatActivity() {
                 showProgress()
             }
             Status.SUCCESSFUL -> {
-                hideProgress()
-                binding.textNotFoundError.visibility = View.INVISIBLE
+                hideProgressForSuccess()
                 weatherReport.peekContent().data?.let {
                     binding.rclWeatherReport.adapter = ReportAdapter(it.weatherList)
                 }
@@ -64,9 +63,14 @@ class ReportActivity : AppCompatActivity() {
         binding.textNotFoundError.visibility = View.INVISIBLE
     }
 
-    private fun hideProgress() {
+    private fun hideProgressForError() {
         binding.progressBarWeatherReport.visibility = View.INVISIBLE
         binding.textNotFoundError.visibility = View.VISIBLE
+    }
+
+    private fun hideProgressForSuccess() {
+        binding.progressBarWeatherReport.visibility = View.INVISIBLE
+        binding.textNotFoundError.visibility = View.INVISIBLE
     }
 
     private fun showMessage(message: String) {
