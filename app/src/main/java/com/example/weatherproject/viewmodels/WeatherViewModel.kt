@@ -23,20 +23,45 @@ class WeatherViewModel(val getWeatherReportByLocation: GetWeatherReportByLocatio
             return mutableMainState
         }
 
-    fun getWeatherReport(lat: Double, long: Double) = viewModelScope.launch {
+    fun getWeatherReport(lat: Double, lon: Double) {
+        getWeatherReportLocal(lat, lon)
+    }
+
+    private fun getWeatherReportLocal(lat: Double, lon: Double) = viewModelScope.launch {
         mutableMainState.value = Event(Data(responseType = Status.LOADING))
         when (val result =
             withContext(Dispatchers.IO) {
-                getWeatherReportByLocation(lat, long, true)
+                getWeatherReportByLocation(getFromRemote = false)
             }) {
             is Result.Failure -> {
                 mutableMainState.value =
                     Event(Data(responseType = Status.ERROR, error = result.exception))
+                getWeatherReportRemote(lat, lon)
             }
             is Result.Success -> {
                 mutableMainState.value =
                     Event(Data(responseType = Status.SUCCESSFUL, data = result.data))
+                getWeatherReportRemote(lat, lon)
             }
         }
     }
+
+    private fun getWeatherReportRemote(lat: Double, lon: Double) =
+        viewModelScope.launch {
+            mutableMainState.value = Event(Data(responseType = Status.LOADING))
+            when (val result =
+                withContext(Dispatchers.IO) {
+                    getWeatherReportByLocation(lat, lon, true)
+                }) {
+                is Result.Failure -> {
+                    mutableMainState.value =
+                        Event(Data(responseType = Status.ERROR, error = result.exception))
+
+                }
+                is Result.Success -> {
+                    mutableMainState.value =
+                        Event(Data(responseType = Status.SUCCESSFUL, data = result.data))
+                }
+            }
+        }
 }

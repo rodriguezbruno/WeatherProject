@@ -3,8 +3,6 @@ package com.example.data.service.response
 import com.google.gson.annotations.SerializedName
 
 data class OneCallResponse(
-    val lat: Double,
-    val lon: Double,
     val daily: List<OneCallDailyResponse>
 )
 

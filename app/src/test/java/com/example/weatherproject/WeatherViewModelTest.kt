@@ -120,4 +120,47 @@ class WeatherViewModelTest {
             }
         }
     }
+
+    @Test
+    fun getWeatherReportLocalSuccessful() {
+        val liveDataUnderTest = subject.mainState.testObserver()
+        whenever(getWeatherReportByLocation.invoke(LAT, LONG, false)).thenReturn(
+            weatherReportValidResult
+        )
+        whenever(weatherReportValidResult.data).thenReturn(weatherReport)
+
+        runBlocking {
+            subject.getWeatherReportLocal().join()
+        }
+
+        liveDataUnderTest.observedValues.run {
+            assertEquals(Status.LOADING, first()?.peekContent()?.responseType)
+            assertNotNull(last()?.peekContent())
+            last()?.peekContent()?.run {
+                assertEquals(Status.SUCCESSFUL, responseType)
+                assertEquals(weatherReport, data)
+            }
+        }
+    }
+
+    @Test
+    fun getWeatherReportLocalError() {
+        val liveDataUnderTest = subject.mainState.testObserver()
+        whenever(getWeatherReportByLocation.invoke(LAT, LONG, false)).thenReturn(
+            weatherReportInvalidResult
+        )
+        whenever(weatherReportInvalidResult.exception).thenReturn(exception)
+
+        runBlocking {
+            subject.getWeatherReportLocal().join()
+        }
+        liveDataUnderTest.observedValues.run {
+            assertEquals(Status.LOADING, first()?.peekContent()?.responseType)
+            assertNotNull(last()?.peekContent())
+            last()?.peekContent()?.run {
+                assertEquals(Status.ERROR, responseType)
+                assertEquals(exception, error)
+            }
+        }
+    }
 }

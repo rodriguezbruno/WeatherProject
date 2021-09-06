@@ -9,7 +9,7 @@ interface WeatherReportAPI {
 
     companion object {
         private const val PART: String = "rain,minutely,alerts,hourly,current"
-        private const val UNITS: String = "units"
+        private const val UNITS: String = "metric"
     }
 
     @GET("onecall")
